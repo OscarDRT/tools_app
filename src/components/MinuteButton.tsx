@@ -1,36 +1,25 @@
 import React from "react";
-import { TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { TouchableOpacity, Dimensions, StyleSheet, View, Text } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
-import { ForegroundView, Text, useThemeColor, View, ViewProps } from "./Themed";
-
+import theme from "../constants/Colors";
 
 const { width } = Dimensions.get('screen')
 
 const size = (width * 20) / 100
 
-const colorText = {
-  light: Colors.light.secundaryText,
-  dark: Colors.dark.secundaryText
-}
-
 export type MinuteButtonProps = {
   minutes: number,
   setMinutes: (s: number)=> void
+  disabled: boolean
 }
 
-export const MinuteButton = ({ minutes = 0, setMinutes}: MinuteButtonProps) => {
-
-  const theme = useColorScheme();
-
-  let textColor = colorText[theme]
+export const MinuteButton = ({ minutes = 0, setMinutes, disabled }: MinuteButtonProps) => {
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={()=> setMinutes(minutes)}>
-      <ForegroundView style={styles.circle}>
-        <Text style={[styles.text, {color: textColor}]}>{minutes}</Text>
-      </ForegroundView>
+    <TouchableOpacity activeOpacity={0.8} onPress={()=> setMinutes(minutes)} disabled={disabled} >
+      <View style={[styles.circle, disabled && styles.circleDisabled]}>
+        <Text style={[styles.text, disabled && styles.textDisabled]}>{minutes}</Text>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -42,8 +31,17 @@ const styles = StyleSheet.create({
     borderRadius: size,
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: theme.dark.primaryText,
+    borderWidth: 2
+  },
+  circleDisabled: {
+    borderColor: theme.dark.foreground
   },
   text: {
-    fontSize: RFValue(32)
+    fontSize: RFValue(32),
+    color: theme.dark.primaryText
+  },
+  textDisabled: {
+    color: theme.dark.foreground
   }
 })

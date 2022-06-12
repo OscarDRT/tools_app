@@ -12,6 +12,6 @@ export default {
     primaryText: '#fff',
     secundaryText: '#2B2845',
     background: '#2B2845',
-    foreground: '#fff'
+    foreground: '#605E6B'
   },
 };
