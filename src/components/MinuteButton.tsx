@@ -15,16 +15,19 @@ const colorText = {
   dark: Colors.dark.secundaryText
 }
 
-export type MinuteButtonProps = {minutes: string}
+export type MinuteButtonProps = {
+  minutes: number,
+  setMinutes: (s: number)=> void
+}
 
-export const MinuteButton = ({ minutes = 0}) => {
+export const MinuteButton = ({ minutes = 0, setMinutes}: MinuteButtonProps) => {
 
   const theme = useColorScheme();
 
   let textColor = colorText[theme]
 
   return (
-    <TouchableOpacity activeOpacity={0.8}>
+    <TouchableOpacity activeOpacity={0.8} onPress={()=> setMinutes(minutes)}>
       <ForegroundView style={styles.circle}>
         <Text style={[styles.text, {color: textColor}]}>{minutes}</Text>
       </ForegroundView>
