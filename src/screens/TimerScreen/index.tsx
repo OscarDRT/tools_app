@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StyleSheet, TouchableOpacity, Vibration } from 'react-native';
 
@@ -7,6 +7,8 @@ import { RootStackScreenProps } from '../../../types';
 import { MinuteButton } from '../../components/MinuteButton';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Countdown } from '../../components/Countdown';
+
+import { Audio } from 'expo-av';
 
 import theme from '../../constants/Colors'
 
@@ -33,16 +35,37 @@ export const TimerScreen = ({ route }: RootStackScreenProps<'TimerScreen'>) => {
 
   const [progress, setProgress] = useState(1);
 
+  const [sound, setSound] = useState<Audio.Sound>();
+
   const onProgress = (progress: number) => {
     setProgress(progress);
   };
 
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+       require('../../../assets/audios/audio.mp3')
+    );
+    setSound(sound);
+
+    console.log('Playing Sound');
+    await sound.playAsync(); }
+
   const onEnd = () => {
+    sound?.stopAsync()
     Vibration.vibrate(PATTERN)
     setMinutes(0);
     setProgress(1);
     setIsPaused(true);
   };
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log('Unloading Sound');
+          sound.unloadAsync(); }
+      : undefined;
+  }, [sound]);
 
   return (
     <View style={styles.container}>
@@ -69,7 +92,11 @@ export const TimerScreen = ({ route }: RootStackScreenProps<'TimerScreen'>) => {
         })}
       </View>
 
-      <TouchableOpacity style={{ alignItems: 'center', borderRadius: 8 }} disabled={!minutes || !isPaused} onPress={() => setIsPaused(false)}>
+      <TouchableOpacity style={{ alignItems: 'center', borderRadius: 8 }} disabled={!minutes || !isPaused} 
+        onPress={async () => {
+          await playSound()
+          setIsPaused(false)
+        }}>
         <View style={[styles.button, (!minutes || !isPaused) && {opacity: 0}]}>
           <Text style={{ color: theme.dark.primaryText, fontWeight: 'bold'}}>
             Empezar
