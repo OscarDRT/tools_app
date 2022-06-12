@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Vibration } from 'react-native';
 
 import { Text, View} from 'react-native';
 import { RootStackScreenProps } from '../../../types';
@@ -12,6 +12,14 @@ import theme from '../../constants/Colors'
 
 import { useKeepAwake } from 'expo-keep-awake';
 import { ProgressBar } from 'react-native-paper';
+
+const ONE_SECOND_IN_MS = 1000;
+
+  const PATTERN = [
+    2 * ONE_SECOND_IN_MS,
+    3 * ONE_SECOND_IN_MS,
+    4 * ONE_SECOND_IN_MS
+  ];
 
 export const TimerScreen = ({ route }: RootStackScreenProps<'TimerScreen'>) => {
 
@@ -30,7 +38,7 @@ export const TimerScreen = ({ route }: RootStackScreenProps<'TimerScreen'>) => {
   };
 
   const onEnd = () => {
-    //vibrate();
+    Vibration.vibrate(PATTERN)
     setMinutes(0);
     setProgress(1);
     setIsPaused(true);
